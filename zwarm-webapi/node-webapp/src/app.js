@@ -33,7 +33,7 @@ server_port = default_server_port;
 
 // include routes
 require('./routes/root.js');
-require('./routes/zwarmdefs.js');
+require('./routes/swarmdefinitions.js');
 require('./routes/zwarms.js');
 require('./routes/geopositions.js');
 
