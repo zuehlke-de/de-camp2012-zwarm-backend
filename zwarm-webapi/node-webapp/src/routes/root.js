@@ -18,7 +18,7 @@ app.get("/", function (req, res) {
             "data": data,
             "title": data.app.name,
             "links": S(
-                '<table><tbody>{{#routes}}<tr><td><a href="{{path}}">{{path}}</a></td><td>{{method}}</</td></tr>{{/routes}}</tbody></table>',
+                '<table><tbody>{{#routes}}<tr><td><a href="{{path}}">{{path}}</a></td><td>{{method}}</td></tr>{{/routes}}</tbody></table>',
                 { "routes": routes }
             )});
     } else if (req.accepts('application/json')) {

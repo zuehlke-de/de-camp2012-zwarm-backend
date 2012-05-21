@@ -1,30 +1,30 @@
 // get a list of all zwarm defs
-app.get("/zwarmdefs", function (req, res) {
+app.get("/swarmdefinitions", function (req, res) {
     res.json([
         {
-            '_id': null,
+            '_id': null
         }
     ]);
 });
 
 // create a new zwarmdef
-app.post("/zwarmdefs", function (req, res) {
-    console.log("new zwarmdef created");
-    res.redirect("/zwarmdefs/:newid");
+app.post("/swarmdefinitions", function (req, res) {
+    console.log("new swarm definition created");
+    res.redirect("/swarmdefinitions/:newid");
 });
 
 // get data for a single zwarmdef
-app.get("/zwarmdefs/:id", function (req, res) {
+app.get("/swarmdefinitions/:id", function (req, res) {
     res.json({
         '_id': null,
         "links": {
-            "zwarms": "/zwarmdefs/" + req.params.id + "/zwarms"
+            "zwarms": "/swarmdefinitions/" + req.params.id + "/swarms"
         }
     });
 });
 
 // update a single zwarmdef
-app.put("/zwarmdefs/:id", function (res, req) {
-    console.log("updated zwarmdef %s", req.params.id);
-    res.redirect("/zwarmdefs/" + req.params.id);
+app.put("/swarmdefinitions/:id", function (res, req) {
+    console.log("updated swarm definition %s", req.params.id);
+    res.redirect("/swarmdefinitions/" + req.params.id);
 });
