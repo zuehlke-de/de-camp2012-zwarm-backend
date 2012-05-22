@@ -37,4 +37,4 @@ var testDummy= function() {
     notifyApns.notifyApplePushNotificationService(data);
 };
 
-testDummy();
+// testDummy();
