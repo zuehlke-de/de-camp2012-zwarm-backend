@@ -3,6 +3,11 @@ zwarm-backend
 
 The sources for the Backend of the Zühlke Zwarm Camp 2012 application
 
+# Server #
+
+host: ec2-54-247-155-88.eu-west-1.compute.amazonaws.com
+port: 4711
+
 # Data formats #
 
 ## Location ##
@@ -67,6 +72,7 @@ MIME-Type: application/vnd.zwarm.swarmdefinition
         "id": "<uuid>", // {String}
         "title": "<Title of Swarm Definition>", // {String}
         "task": "<What to do when the swarm triggers>", // {String}
+        "ownerId": "<The id of the swarmdefinition owner>", // {Number}
         "minParticipants", "<Minimum number of participants>", // {Number}
         "maxParticipants", "<Maximum number of participants>", // {Number}
         "radius": "<Swarm radius in meters>", // {Number}
@@ -96,7 +102,7 @@ Route /swarmdefinitions
 
 Route /swarmdefinitions/:id/swarms
 
-    return type: MIME-Type: application/vnd.zwarm.swarmdefinition
+    return type: application/vnd.zwarm.swarmdefinition
 
         {
             "id",
