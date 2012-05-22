@@ -6,10 +6,28 @@
 var express = require('express')
   , routes = require('./routes')
     , default_server_port = 4711
-    , server_port = default_server_port;
-
+    , server_port = default_server_port
+    , algo_node_address = "http://localhost:4712"
+    , io = require('socket.io-client');
 var app = module.exports = express.createServer();
+
 GLOBAL.app = app;
+GLOBAL.algo_socket = undefined;
+
+var connectToAlgoNode = function () {
+
+    console.log("connecting to algo node: %s", algo_node_address);
+    algo_socket = io.connect(algo_node_address);
+
+    algo_socket.on('connect', function () {
+        console.log("Connected to algo node.");
+    });
+
+    algo_socket.on('disconnect', function () {
+        console.log("Disconnected from algo node. Trying reconnect...");
+    });
+};
+
 
 // Configuration
 
@@ -54,6 +72,7 @@ app.post('/swarms/:id/comments', routes.swarms.createComment);
 app.get('/swarms/:id/comments', routes.swarms.getAllComments);
 
 app.listen(default_server_port, function(){
-  console.log("ZwarmApp web api server listening on port %d in %s mode", app.address().port, app.settings.env);
+    console.log("ZwarmApp web api server listening on port %d in %s mode", app.address().port, app.settings.env);
+    connectToAlgoNode();
 });
 
