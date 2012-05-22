@@ -1,3 +1,7 @@
+// our certificate and key for accessing the Apple Push Notification Service
+var certificate="gugus";
+var key= "daaa";
+
 var apns = require('apn'),
     util = require('util');
 
@@ -9,8 +13,8 @@ var connection;
  */
 exports.connectToApns = function() {
     var options= {
-        certData:"gugus",
-        keyData:"daaa",
+        certData:certificate,
+        keyData:key,
         errorCallback: apnErrorCallback
     };
     connection= new apns.connection(options);
