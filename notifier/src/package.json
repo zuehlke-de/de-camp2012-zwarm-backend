@@ -3,6 +3,8 @@
     , "version": "0.0.1"
     , "private": true
     , "dependencies": {
-    "socket.io": ">= 0.9.6"
+    "socket.io": ">= 0.9.6",
+    "apn": ">= 1.1.7",
+    "util": ">= 0.4.9"
 }
 }

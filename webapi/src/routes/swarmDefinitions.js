@@ -33,12 +33,12 @@ exports.getAll = function (req, res) {
  */
 exports.create = function (req, res) {
 
-    var requiredFields = ['title', 'task', 'minParticipants', 'radius', 'waitingTime', 'validFrom', 'duration'],
-        i, def, isValid;
+    var requiredFields = ['ownerId', 'title', 'task', 'minParticipants', 'radius', 'waitingTime', 'validFrom', 'duration'],
+        def, isValid;
 
     // require JSON
     if (!req.is('application/json')) {
-        console.log("Did not receive JSON.")
+        console.log("Did not receive JSON.");
         res.send(400);
         return;
     }
@@ -56,6 +56,10 @@ exports.create = function (req, res) {
     }
 
     // check semantic correctness
+    if (def.ownerId == "") {
+        res.send("ownerId must not be empty!", 400);
+        return;
+    }
     if (def.title == "") {
         res.send("title must not be empty!", 400);
         return;
