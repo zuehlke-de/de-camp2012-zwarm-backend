@@ -1,0 +1,9 @@
+{
+    "name": "zwarmapp-algo"
+    , "version": "0.0.1"
+    , "private": true
+    , "dependencies": {
+    "socket.io": ">= 0.9.6"
+    , "socket.io-client": ">= 0.9.6"
+}
+}

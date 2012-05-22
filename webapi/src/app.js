@@ -8,11 +8,25 @@ var express = require('express')
     , default_server_port = 4711
     , server_port = default_server_port
     , algo_node_address = "http://localhost:4712"
-    , io = require('socket.io-client');
+    , io = require('socket.io-client')
+    , cradle = require('cradle')
+    , db_host = "http://localhost"
+    , db_port = 5984
+    , db_name = "zwarmapp";
+
 var app = module.exports = express.createServer();
+
+// setup cradle
+cradle.setup({
+    host: db_host,
+    port: db_port,
+    cache: true,
+    raw: false
+});
 
 GLOBAL.app = app;
 GLOBAL.algo_socket = undefined;
+GLOBAL.db = new(cradle.Connection)().database(db_name);
 
 var connectToAlgoNode = function () {
 
@@ -71,6 +85,21 @@ app.post('/swarms/:id/participants', routes.swarms.participate);
 app.post('/swarms/:id/comments', routes.swarms.createComment);
 app.get('/swarms/:id/comments', routes.swarms.getAllComments);
 
+// check if the couch db instance exists and create it if necessary
+db.exists(function (err, exists) {
+    if (err) {
+        console.log("Error while checking for database existence: %s", err);
+    } else if (exists) {
+        console.log("The database %s already exists.", db.name);
+    } else {
+        console.log("Database %s doesn't exist. Creating it...", db.name);
+        db.create(function () {
+            console.log("Database %s created.", db.name);
+        });
+    }
+});
+
+// start web api
 app.listen(default_server_port, function(){
     console.log("ZwarmApp web api server listening on port %d in %s mode", app.address().port, app.settings.env);
     connectToAlgoNode();
