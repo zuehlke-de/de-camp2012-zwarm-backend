@@ -6,7 +6,6 @@
 var express = require('express')
   , routes = require('./routes')
     , default_server_port = 4711
-    , server_port = default_server_port
     , algo_node_address = "http://localhost:4712"
     , io = require('socket.io-client')
     , cradle = require('cradle')
@@ -45,13 +44,14 @@ var connectToAlgoNode = function () {
 
 // Configuration
 
-app.configure(function(){
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'jade');
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(app.router);
-  app.use(express.static(__dirname + '/public'));
+app.configure(function () {
+    app.set('views', __dirname + '/views');
+    app.set('view engine', 'jade');
+    app.use(express.bodyParser());
+    app.use(express.methodOverride());
+    app.use(app.router);
+    app.use(express.static(__dirname + '/public'));
+    app.use(express.logger('dev'));
 });
 
 app.configure('development', function(){
