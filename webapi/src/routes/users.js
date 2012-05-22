@@ -43,6 +43,7 @@ exports.create = function (req, res) {
     }
 
     // store user in database
+    user.doctype = 'user';
     db.save(user.id, user, function (err) {
 
         if (err) {
@@ -53,6 +54,7 @@ exports.create = function (req, res) {
 
         // signal creation
         delete user._rev;
+        delete user.doctype;
         res.json(user, 201);
         console.log("Create user: User created: %s (%s)", user.id, user.nickname);
     });
