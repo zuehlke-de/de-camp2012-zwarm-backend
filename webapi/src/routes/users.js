@@ -13,6 +13,19 @@ exports.create = function (req, res) {
  * Update current location of user
  */
 exports.updateLocation = function (req, res) {
+
+    // check if request body is JSON
+    if (!req.is('application/json')) {
+        res.send(400);
+        return;
+    }
+
+    // send location update to algo node
+    GLOBAL.algo_socket.emit('location', {
+        id: req.params.id,
+        location: req.body
+    });
+
     res.send(200);
 };
 

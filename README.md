@@ -41,6 +41,7 @@ MIME-Type: application/vnd.zwarm.comment
     {
         "timestamp": "<Creation time, milliseconds since 1.1.1970>", // {Number}
         "text": "<The comment text>", // {String}
+        "userNickname": "<The nickname of the comment author>" // {String}
     }
 
 ## Swarm ##
@@ -50,8 +51,10 @@ MIME-Type: application/vnd.zwarm.swarm
     {
         "id": "<uuid>", // {String}
         "invitationCount": "<The number of invited users>", // {Number}
-        "center" : { ... } "<The center of the swarm>", // {Location}
-        "invitationTime" : <Date of invitation, milliseconds since 1.1.1970>
+        "commentCount": "<The number of comments>", // {Number}
+        "center" : { ... } "<The center location of the swarm>", // {Location}
+        "invitationTime" : "<Date of invitation, milliseconds since 1.1.1970>"
+        "city" : "<The city which host the center location>", // {String}
         "participants": { ... } // {User}
         "comments": { ... } // {Comment}
     }
@@ -71,5 +74,41 @@ MIME-Type: application/vnd.zwarm.swarmdefinition
         "duration": "<Duration of the swarm in seconds>", // {Number}
         "validFrom": "<Date from which the swarm is valid, milliseconds since 1.1.1970>", // {Number}
         "validUntil": "<Date until which the swarm is valid, milliseconds since 1.1.1970>" // {Number}
+        "swarmCount": "<The number of swarms>", // {Number}
         "swarms": { ... } // {Swarm}
     }
+
+## Route Definitions ##
+
+Route /swarmdefinitions
+
+    query parameters:
+        type: [upcoming|past|owned|participated]
+        user: <uuid>
+
+    return type: application/vnd.zwarm.swarmdefinition
+
+        {
+            "id",
+            "title",
+            "swarmCount"
+        }
+
+Route /swarmdefinitions/:id/swarms
+
+    return type: MIME-Type: application/vnd.zwarm.swarmdefinition
+
+        {
+            "id",
+            "swarms": [
+                {
+                    "id",
+                    "invitationTime",
+                    "commentCount"
+                }
+                ...
+            ]
+        }
+
+
+
