@@ -26,7 +26,7 @@ app.get('/users/:id/geopositions', function (req, res) {
                     '_id': null,
                     'time': (new Date()).getTime(),
                     'lat': null,
-                    'lon': null,
+                    'lon': null
                 }
             ]
         }

@@ -38,5 +38,6 @@ require('./routes/zwarms.js');
 require('./routes/geopositions.js');
 
 // start server
-app.listen(server_port);
-console.log("Started zwarmer web api on port %d in %s mode.", app.address().port, app.settings.env);
+app.listen(server_port, function () {
+    console.log("Started zwarmer web api on port %d in %s mode.", app.address().port, app.settings.env);
+});
