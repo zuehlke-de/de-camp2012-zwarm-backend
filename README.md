@@ -3,6 +3,11 @@ zwarm-backend
 
 The sources for the Backend of the Zühlke Zwarm Camp 2012 application
 
+# Server #
+
+host: ec2-54-247-155-88.eu-west-1.compute.amazonaws.com
+port: 4711
+
 # Data formats #
 
 ## Location ##
