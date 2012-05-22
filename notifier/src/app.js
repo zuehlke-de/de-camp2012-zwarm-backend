@@ -3,6 +3,7 @@ notifyC2dm = require('./notifyC2dm.js');
 
 // connect to the known devices
 notifyApns.connectToApns();
+notifyC2dm.connectToC2dm();
 
 var notifier_port = 4713,
     io = require('socket.io').listen(notifier_port, function () {
