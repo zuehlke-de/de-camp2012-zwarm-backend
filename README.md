@@ -34,12 +34,26 @@ MIME-Type: application/vnd.zwarm.user
         ]
     }
 
+## Comment ##
+
+MIME-Type: application/vnd.zwarm.comment
+
+    {
+        "timestamp": "<Creation time, milliseconds since 1.1.1970>", // {Number}
+        "text": "<The comment text>", // {String}
+    }
+
 ## Swarm ##
 
 MIME-Type: application/vnd.zwarm.swarm
 
     {
-
+        "id": "<uuid>", // {String}
+        "invitationCount": "<The number of invited users>", // {Number}
+        "center" : { ... } "<The center of the swarm>", // {Location}
+        "invitationTime" : <Date of invitation, milliseconds since 1.1.1970>
+        "participants": { ... } // {User}
+        "comments": { ... } // {Comment}
     }
 
 ## Swarm Definition ##
@@ -57,5 +71,5 @@ MIME-Type: application/vnd.zwarm.swarmdefinition
         "duration": "<Duration of the swarm in seconds>", // {Number}
         "validFrom": "<Date from which the swarm is valid, milliseconds since 1.1.1970>", // {Number}
         "validUntil": "<Date until which the swarm is valid, milliseconds since 1.1.1970>" // {Number}
-        "swarms:
+        "swarms": { ... } // {Swarm}
     }
