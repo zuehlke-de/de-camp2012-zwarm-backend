@@ -3,8 +3,11 @@
   , "version": "0.0.1"
   , "private": true
   , "dependencies": {
-      "express": "2.5.8"
+      "express": ">= 2.5.8"
     , "jade": ">= 0.0.1"
-    , "socket.io-client": "0.9.6"
-  }
+    , "socket.io-client": ">= 0.9.6"
+    , "cradle": ">= 0.6.3"
+    , "mustache": ">= 0.4.0"
+    , "nimble": ">= 0.0.2"
+}
 }
