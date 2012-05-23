@@ -12,7 +12,17 @@
  * @param res
  */
 exports.get = function (req, res) {
-    res.send(200);
+    var swarm_id = req.params.id;
+    var swarm = {
+        id:swarm_id,
+        swarmDefinitionId:'0001',
+        invitationCount:13,
+        commentCount:4,
+        center:{timestamp:new Date(2012, 5, 21, 12, 3, 0).valueOf(), latitude:50.30195, longitude:9.74822},
+        invitationTime:new Date(2012, 5, 21, 12, 3, 0).valueOf(),
+        city:'Bad Brueckenau'
+    };
+    res.json(swarm, 200);
 };
 
 /**
@@ -31,7 +41,7 @@ exports.participate = function (req, res) {
  */
 exports.createComment = function (req, res) {
     res.send(201);
-}
+};
 
 /**
  * Get all comments for a swarm instance
@@ -39,5 +49,31 @@ exports.createComment = function (req, res) {
  * @param res
  */
 exports.getAllComments = function (req, res) {
-    res.send(200);
+    var swarm_id = req.params.id;
+    var swarm = {
+        id:swarm_id,
+        comments:[
+            {
+                timestamp:new Date(2012, 5, 21, 12, 3, 0).valueOf(),
+                text:'Wicked fun!',
+                userNickname:'Bart'
+            },
+            {
+                timestamp:new Date(2012, 5, 21, 12, 3, 0).valueOf(),
+                text:'We had a great time!',
+                userNickname:'Lisa'
+            },
+            {
+                timestamp:new Date(2012, 5, 21, 12, 3, 0).valueOf(),
+                text:'Hello',
+                userNickname:'Moe'
+            },
+            {
+                timestamp:new Date(2012, 5, 21, 12, 3, 0).valueOf(),
+                text:'I like this app!',
+                userNickname:'Homer'
+            }
+        ]
+    };
+    res.json(swarm, 200);
 };
