@@ -8,10 +8,9 @@ var connection;
 var sessionToken;
 
 /**
- * Connect to apns for the ZwarmApp
+ * Connect to c2dm for the ZwarmApp
  */
 exports.connectToC2dm = function() {
-
     var config = {
         user: googleUser,
         password: googlePass,
@@ -28,19 +27,18 @@ exports.notifyGoogleC2dm = function(data) {
     if (!sessionToken) {
         connection.login(function(err, token) {
             if (err) {
-                console.log("shit happens: "+err);
+                console.log("Failed to log in to c2dm: "+err);
                 return;
             }
             sessionToken= token;
         });
     }
     // create the notification and send it
-    var message = createNotification(data);
-    connection.send(message, function(err, messageId){
+    connection.send(createNotification(data), function(err, messageId){
         if (err) {
-            console.log("Failed: "+err);
+            console.log("Sending notification failed: "+err);
         } else {
-            console.log("Sent to google with message ID: ", messageId);
+            console.log("Sent notification to google with message ID: ", messageId);
         }
     });
 };

@@ -1,15 +1,20 @@
-notifyApns = require('./notifyApns.js');
-notifyC2dm = require('./notifyC2dm.js');
+/**
+ * Notifier main app.
+ */
 
-// connect to the known devices
-notifyApns.connectToApns();
-notifyC2dm.connectToC2dm();
 
+// connect to the Apple and Google services
+require('./notifyApns.js').connectToApns();
+require('./notifyC2dm.js').connectToC2dm();
+
+// create the listener socket
 var notifier_port = 4713,
     io = require('socket.io').listen(notifier_port, function () {
         console.log("ZwarmApp Notifier Node listening on port %d", notifier_port);
     });
 
+
+// the processNotification function
 var actions = require('./actions');
 
 io.sockets.on('connection', function (socket) {
@@ -27,6 +32,8 @@ io.sockets.on('connection', function (socket) {
     });
 });
 
+// test function for apn test
+//noinspection JSUnusedGlobalSymbols
 var testDummy= function() {
     var data= {
         deviceToken:"oo7",
