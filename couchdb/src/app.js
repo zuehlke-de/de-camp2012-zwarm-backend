@@ -188,6 +188,13 @@ var createDesignDocuments = function () {
 
                 return result;
             }
+        },
+        dummy : {
+            map: function (doc) {
+                if (doc.doctype === 'user' && doc.location !== undefined) {
+                    emit(doc.location.timestamp, doc);
+                }
+            }
         }
     }, function (err) {
         if (err) {
@@ -196,5 +203,4 @@ var createDesignDocuments = function () {
         }
         console.log("Created design document for swarms.");
     });
-};
-
+}
