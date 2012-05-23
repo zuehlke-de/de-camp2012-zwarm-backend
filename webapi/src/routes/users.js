@@ -65,7 +65,8 @@ exports.create = function (req, res) {
  */
 exports.updateLocation = function (req, res) {
 
-    var loc = req.body,
+    var userDoc = req.body,
+        loc = userDoc.location,
         user = { id: req.params.id };
 
     // check if request body is JSON

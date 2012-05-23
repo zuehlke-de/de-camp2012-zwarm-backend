@@ -110,7 +110,7 @@ Route /swarmdefinitions
     return type: Array of application/vnd.zwarm.swarmdefinition
 
         {
-            totalCount: <total number of swarms>,
+            totalSwarmCount: <total number of swarms>,
             swarmDefinitions: [
                 {
                     "id",

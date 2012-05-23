@@ -67,7 +67,7 @@ exports.getAll = function (req, res) {
     }
 
     console.log("Querying swarm definitions (offset = %d, limit = %d)", ofs, limit);
-    db.view("swarmdefinitions/count", function (err, result) {
+    db.view("swarms/count", function (err, result) {
 
         var count = 0;;
 
@@ -77,7 +77,10 @@ exports.getAll = function (req, res) {
             return;
         }
 
-        count = result[0].value;
+        if (result.length > 0) {
+            count = result[0].value;
+        }
+
         view_opts.limit = limit;
         view_opts.skip = ofs;
         db.view(view_name, view_opts, function (err, result) {
@@ -90,7 +93,7 @@ exports.getAll = function (req, res) {
 
             // build result
             resultValue = {
-                totalCount: count,
+                totalSwarmCount: count,
                 swarmDefinitions: []
             };
             result.forEach(function (r) {
@@ -218,35 +221,36 @@ exports.update = function (req, res) {
  * @param res
  */
 exports.getAllSwarms = function (req, res) {
-    var swarmdefinition_id = req.params.id;
-    var dummyReturnValue = { id: swarmdefinition_id,
-        swarms : [
-            {
-                id: '1',
-                city: 'Hamburg',
-                invitationTime: new Date(2012, 5, 21, 12, 3, 0).valueOf(),
-                commentCount: 3
-            },
-            {
-                id: '2',
-                city: 'Muenchen',
-                invitationTime: new Date(2012, 5, 21, 12, 5, 0).valueOf(),
-                commentCount: 6
-            },
-            {
-                id: '3',
-                city: 'Frankfurt',
-                invitationTime: new Date(2012, 5, 21, 15, 8, 0).valueOf(),
-                commentCount: 8
-            },
-            {
-                id: '4',
-                city: 'Hannover',
-                invitationTime: new Date(2012, 5, 21, 15, 3, 0).valueOf(),
-                commentCount: 13
-            }
-        ]
-    };
 
-    res.json(dummyReturnValue, 200);
+    var swarmdefinition_id = req.params.id,
+        view_opts = {
+            endkey: [swarmdefinition_id],
+            startkey: [swarmdefinition_id, {}],
+            descending: true,
+            group_level: 3
+        };
+
+    db.view('swarms/all', view_opts, function (err, result) {
+
+        if (err) {
+            console.log("Get All swarms: ERROR(couch): %s", JSON.stringify(err));
+            res.send("Error while retrieving swarms!", 500);
+            return;
+        }
+
+        // build result object
+        swarmDef = {
+            id: swarmdefinition_id,
+            swarms: nimble.map(result, function (s) {
+                return {
+                    id:s.value.id,
+                    invitationTime:s.value.invitationTime,
+                    commentCount:s.value.commentCount
+                };
+            })
+        };
+
+        // send ok
+        res.json(swarmDef, 200);
+    });
 };

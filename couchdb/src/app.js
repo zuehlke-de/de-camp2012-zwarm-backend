@@ -143,5 +143,58 @@ var createDesignDocuments = function () {
         }
         console.log("Created design document for swarm definitions.");
     });
+
+    db.save('_design/swarms', {
+        count: {
+            map: function (doc) {
+                if (doc.doctype === 'swarm') {
+                    emit(doc._id, 1);
+                }
+            },
+            reduce: function (k, v) {
+                return sum(v);
+            }
+        },
+        all: {
+            map: function (doc) {
+                if (doc.doctype === 'swarm') {
+                    emit([doc.swarmDefinitionId, doc.invitationTime, doc._id, 1], { type: 's', id: doc._id, invitationTime: doc.invitationTime });
+                } else if (doc.doctype === 'comments') {
+                    emit([0, 0, doc.swarmId, 0], { type: 'c' })
+                }
+            },
+            reduce: function(keys, values, rereduce) {
+                var result = undefined;
+
+                if (rereduce) {
+                    values.forEach(function (v) {
+                        if (result === undefined) {
+                            result = v;
+                        } else {
+                            result.commentCount += v.commentCount;
+                        }
+                    });
+                } else {
+                    result = { commentCount : 0 };
+                    values.forEach(function (v) {
+                        if (v.type === 's') {
+                            result.id = v.id;
+                            result.invitationTime = v.invitationTime;
+                        } else if (v.type === 'c') {
+                            result.commentCount += 1;
+                        }
+                    });
+                }
+
+                return result;
+            }
+        }
+    }, function (err) {
+        if (err) {
+            console.log("Could not create design document for swarms: %s", JSON.stringify(err));
+            return;
+        }
+        console.log("Created design document for swarms.");
+    });
 };
 
