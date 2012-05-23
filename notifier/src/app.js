@@ -55,11 +55,11 @@ var testApn= function() {
 var testC2dm= function() {
     var data= {
         // token android phone
-        deviceToken: "todo",
+        deviceToken: "ND15279C45TC8UM0CBSU66B",
         notificationText: "Hello World",
         payload: {}
     };
-    notifyC2dm.notifyApplePushNotificationService(data);
+    notifyC2dm.notifyGoogleC2dm(data);
     console.log("Sent notification to google c2dm.");
 };
 
