@@ -27,7 +27,7 @@ exports.notifyGoogleC2dm = function(data) {
     if (!sessionToken) {
         connection.login(function(err, token) {
             if (err) {
-                console.log("Failed to log in to c2dm: "+err);
+                console.log("Failed to log in to c2dm: "+err+", "+token);
                 return;
             }
             sessionToken= token;
