@@ -34,6 +34,16 @@ db.exists(function (err, exists) {
 // create views for querying swarm definitions
 var createDesignDocuments = function () {
     db.save('_design/swarmdefinitions', {
+        count: {
+            map: function (doc) {
+                if (doc.doctype === 'swarmdefinition') {
+                    emit(doc._id, 1);
+                }
+            },
+            reduce: function (k, v) {
+                return sum(v);
+            }
+        },
         upcoming: {
             map: function (doc) {
 
@@ -41,7 +51,7 @@ var createDesignDocuments = function () {
 
                 if (doc.doctype === 'swarmdefinition') {
                     if (doc.validUntil === undefined || doc.validUntil >= now) {
-                        emit([doc.created || now, doc.id], { id: doc.id, title: doc.title });
+                        emit([doc.created || now, doc._id], { id: doc._id, title: doc.title });
                     }
                 }
             }
@@ -132,6 +142,25 @@ var createDesignDocuments = function () {
             return;
         }
         console.log("Created design document for swarm definitions.");
+    });
+
+    db.save('_design/swarms', {
+        count: {
+            map: function (doc) {
+                if (doc.doctype === 'swarm') {
+                    emit(doc._id, 1);
+                }
+            },
+            reduce: function (k, v) {
+                return sum(v);
+            }
+        }
+    }, function (err) {
+        if (err) {
+            console.log("Could not create design document for swarms: %s", JSON.stringify(err));
+            return;
+        }
+        console.log("Created design document for swarms.");
     });
 };
 
