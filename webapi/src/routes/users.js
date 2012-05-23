@@ -60,6 +60,28 @@ exports.create = function (req, res) {
     });
 };
 
+
+function uuid()
+{
+    var chars = '0123456789abcdef'.split('');
+
+    var uuid = [], rnd = Math.random, r;
+    uuid[8] = uuid[13] = uuid[18] = uuid[23] = '-';
+    uuid[14] = '4'; // version 4
+
+    for (var i = 0; i < 36; i++)
+    {
+        if (!uuid[i])
+        {
+            r = 0 | rnd()*16;
+
+            uuid[i] = chars[(i == 19) ? (r & 0x3) | 0x8 : r & 0xf];
+        }
+    }
+
+    return uuid.join('');
+}
+
 /**
  * Update current location of user
  */
@@ -67,7 +89,22 @@ exports.updateLocation = function (req, res) {
 
     var userDoc = req.body,
         loc = userDoc.location,
-        user = { id: req.params.id };
+        user = { id: req.params.id },
+        dummySwarm =
+            {
+                "doctype" : "swarm",
+                "id": uuid(), // {String}
+                "swarmDefinitionId": "0001", // {String}
+                "invitationCount": 20, // {Number}
+                "commentCount": 4, // {Number}
+                "center" :
+                {
+                        latitude:50.302765, longitude:9.748626
+                },
+                "invitationTime" : new Date().valueOf(),
+                "city" : "Bad Brückenau", // {String}
+                "participants": [user]
+            };
 
     // check if request body is JSON
     if (!req.is('json')) {
@@ -116,6 +153,15 @@ exports.updateLocation = function (req, res) {
         }
     });
 
+    // create dummy swarm
+    db.save(dummySwarm, function (err, result) {
+        if (err) {
+            console.log("Update location: Could not save new dummy swarm for user %s: %s", user.id, JSON.stringify(err));
+        } else {
+            console.log("Update location: Created new dummy swarm for user %s: %s", user.id, result.id);
+        }
+    });
+
     // send 200 anyway
     res.send("Location saved", 200);
 };
@@ -126,7 +172,7 @@ exports.updateLocation = function (req, res) {
  * @param req
  * @param res
  */
-exports.getNearbyUsers = function (req, res) {
+var dummyNearbyUsers = function (req, res) {
     var radius = parseFloat(req.query['radius']);
 
     // check radius parameter
@@ -167,3 +213,20 @@ exports.getNearbyUsers = function (req, res) {
 
     res.json(dummyReturnValue, 200);
 };
+
+
+var getNearbyUsers = function() {
+    var view_name, view_opts;
+    view_name = "swarmdefinitions/past";
+    view_opts = {
+        group_level: 2,
+        descending: true,
+        endkey: [now],
+        startkey: [0,{}]
+    };
+
+};
+
+
+exports.getNearbyUsers = dummyNearbyUsers;
+
