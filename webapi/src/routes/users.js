@@ -165,7 +165,7 @@ exports.updateLocation = function (req, res) {
                     dummySwarm.participants.push({ id:u.id });
                 });
 
-                db.save(dummySwarm, function (err, result) {
+                db.save(dummySwarm.id, dummySwarm, function (err, result) {
                     if (err) {
                         console.log("Update location: Could not save new dummy swarm for user %s: %s", user.id, JSON.stringify(err));
                     } else {
