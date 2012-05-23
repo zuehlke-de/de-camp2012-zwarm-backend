@@ -4,8 +4,11 @@
 
 
 // connect to the Apple and Google services
-require('./notifyApns.js').connectToApns();
-require('./notifyC2dm.js').connectToC2dm();
+var notifyApns= require('./notifications/notifyApns.js');
+notifyApns.connectToApns();
+
+var notifyC2dm= require('./notifications/notifyC2dm.js');
+notifyC2dm.connectToC2dm();
 
 // create the listener socket
 var notifier_port = 4713,
@@ -44,7 +47,21 @@ var testApn= function() {
         payload: {}
     };
     notifyApns.notifyApplePushNotificationService(data);
-    console.log("Sent notification.");
+    console.log("Sent notification to apple apns.");
+};
+
+// test function for C2dn test
+//noinspection JSUnusedGlobalSymbols
+var testC2dm= function() {
+    var data= {
+        // token android phone
+        deviceToken: "todo",
+        notificationText: "Hello World",
+        payload: {}
+    };
+    notifyC2dm.notifyApplePushNotificationService(data);
+    console.log("Sent notification to google c2dm.");
 };
 
 // testApn();
+// testC2dm();

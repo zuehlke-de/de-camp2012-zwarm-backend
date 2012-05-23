@@ -1,5 +1,10 @@
 // our certificate and key for accessing the Apple Push Notification Service
-var certificate="-----BEGIN CERTIFICATE-----\n"
+var certificate="Bag Attributes\n"
+    +"friendlyName: Apple Development IOS Push Services: com.zuehlke.zwarm\n"
+    +"localKeyID: 68 65 93 8D 7C 3B 4B 59 29 DF C2 5F 74 53 89 63 E2 65 3D 0C\n"
+    +"subject=/UID=com.zuehlke.zwarm/CN=Apple Development IOS Push Services: com.zuehlke.zwarm/C=DE\n"
+    +"issuer=/C=US/O=Apple Inc./OU=Apple Worldwide Developer Relations/CN=Apple Worldwide Developer Relations Certification Authority\n"
+    +"-----BEGIN CERTIFICATE-----\n"
     +"MIIFcTCCBFmgAwIBAgIIXxkN4/h/o7kwDQYJKoZIhvcNAQEFBQAwgZYxCzAJBgNV\n"
     +"BAYTAlVTMRMwEQYDVQQKDApBcHBsZSBJbmMuMSwwKgYDVQQLDCNBcHBsZSBXb3Js\n"
     +"ZHdpZGUgRGV2ZWxvcGVyIFJlbGF0aW9uczFEMEIGA1UEAww7QXBwbGUgV29ybGR3\n"
@@ -60,9 +65,10 @@ var key= "-----BEGIN RSA PRIVATE KEY-----\n"
     +"Au7/a02E3i7aG1AKWDjDxutLsv16EI21tZq+moO2V98Ww6ilUkI=\n"
     +"-----END RSA PRIVATE KEY-----\n";
 
-// var apns = require('./apn-src/apn'),
-var apns = require('apn'),
-    util = require('util');
+// for debugging, use local source
+// var apns = require('./apn-src/apn');
+var apns = require('apn');
+var util = require('util');
 
 // the connection to the apns
 var connection;
