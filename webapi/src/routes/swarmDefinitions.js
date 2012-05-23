@@ -9,21 +9,52 @@ var default_limit = 10,
 
 /**
  * Get a list of all swarm definitions
+ * The query parameter type selects the view to fetch
+ *
  * @param req The parsed http request
  * @param res The response object
  */
 exports.getAll = function (req, res) {
 
-    var ofs = parseInt(req.query['offset']),
-        limit = parseInt(req.query['limit']);
+    var valid_types = ['past', 'upcoming', 'owned', 'participated'],
+        default_type = 'upcoming',
+        ofs = parseInt(req.query['offset']),
+        limit = parseInt(req.query['limit']),
+        type = req.query['type'] || default_type,
+        view_name, view_opts;
 
     // check validity of paging parameters
     if (isNaN(ofs) || ofs < 0) ofs = 0;
     if (isNaN(limit) || limit < 1) limit = default_limit;
 
-    console.log("Querying swarm definitions (offset = %d, limit = %d)", ofs, limit);
+    // check validity of type parameter
+    switch (type) {
+        case "past":
+            view_name = "swarmdefinitions/past";
+            break;
+        case "upcoming":
+            view_name = "swarmdefinitions/upcoming";
+            break;
+        case "owned":
+            view_name = "swarmdefinitions/owned";
+            break;
+        default:
+            res.send("Invalid type parameter "+type+". Must be one of: " + valid_types.join(", "), 400);
+            return;
+    }
 
-    res.send(200);
+    console.log("Querying swarm definitions (offset = %d, limit = %d)", ofs, limit);
+    db.view(view_name, view_opts, function (err, result) {
+
+        if (err) {
+            console.log("Get all swarm definitions. ERROR(couchdb): %s", JSON.stringify(err));
+            res.send("Error while searching swarm definitions", 500);
+            return;
+        }
+
+        // send ok
+        res.send(200);
+    });
 };
 
 /**
@@ -101,6 +132,7 @@ exports.create = function (req, res) {
 
     // add as new document to database
     def.doctype = 'swarmdefinition';
+    def.created = (new Date()).getTime();
     db.save(def, function (err, result) {
 
         if (err) {

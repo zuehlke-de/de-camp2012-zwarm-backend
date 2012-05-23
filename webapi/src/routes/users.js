@@ -69,21 +69,24 @@ exports.updateLocation = function (req, res) {
         user = { id: req.params.id };
 
     // check if request body is JSON
-    if (!req.is('application/json')) {
-        res.send(400);
+    if (!req.is('json')) {
+        res.send("Data not in JSON format!", 400);
         return;
     }
 
     // check if location is correct
-    if (loc.timestamp === undefined || isNaN(loc.timestamp) || loc.timestamp < 0) {
-        res.send("No or invalid timestamp valid", 400);
+    var timestamp = parseInt(loc.timestamp);
+    if (loc.timestamp === undefined || isNaN(timestamp) || timestamp < 0) {
+        res.send("No or invalid timestamp", 400);
         return;
     }
-    if(loc.latitude === undefined || isNaN(loc.latitude) || !(-90 <= loc.latitude && loc.latitude <= 90)) {
+    var latitude = parseFloat(loc.latitude);
+    if(loc.latitude === undefined || isNaN(latitude) || !(-90 <= latitude && latitude <= 90)) {
         res.send("No or invalid latitude value", 400);
         return;
     }
-    if(loc.longitude === undefined || isNaN(loc.longitude) || !(-180 <= loc.longitude&& loc.longitude <= 180)) {
+    var longitude = parseFloat(loc.longitude);
+    if(loc.longitude === undefined || isNaN(longitude) || !(-180 <= longitude && longitude <= 180)) {
         res.send("No or invalid longitude value", 400);
         return;
     }
