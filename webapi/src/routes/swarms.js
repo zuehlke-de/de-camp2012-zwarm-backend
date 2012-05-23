@@ -71,10 +71,10 @@ exports.participate = function (req, res) {
 
         db.save(swarmId, swarm, function (err, result) {
             if (err) {
-                console.log("Participate: Failed to participate user %s at swarm %s: %s", user.id, swarm.id, JSON.stringify(err));
+                console.log("Participate: Failed to participate user %s at swarm %s: %s", user.id, swarmId, JSON.stringify(err));
                 res.send("Error while saving participation " + user.id, 500);
             } else {
-                console.log("Participate: User %s participates swarm %s: %s", user.id, swarm.id, result.id);
+                console.log("Participate: User %s participates swarm %s: %s", user.id, swarmId, result.id);
                 res.send(201);
             }
         });
@@ -124,7 +124,7 @@ exports.createComment = function (req, res) {
     db.get(swarmId, function (err, doc) {
         if (err) {
             console.log("Create comment: Could not find swarm %s: %s", swarmId, JSON.stringify(err));
-            res.send("Error while saving participation " + user.id, 500);
+            res.send("Error while saving participation " + comment.text, 500);
         }
         swarm = doc;
         comment.timestamp = new Date().valueOf();
@@ -133,9 +133,9 @@ exports.createComment = function (req, res) {
         db.save(swarmId, swarm, function (err, result) {
             if (err) {
                 console.log("Create comment: Failed to create comment %s for swarm %s: %s", comment.test, swarmId, JSON.stringify(err));
-                res.send("Error while saving comment " + user.id, 500);
+                res.send("Error while saving comment " + comment.text, 500);
             } else {
-                console.log("Participate: Comment %s added to swarm %s: %s", comment, swarmId, result.id);
+                console.log("Participate: Comment %s added to swarm %s: %s", comment.text, swarmId, result.id);
                 res.send(201);
             }
         });
