@@ -67,7 +67,7 @@ exports.getAll = function (req, res) {
     }
 
     console.log("Querying swarm definitions (offset = %d, limit = %d)", ofs, limit);
-    db.view("swarmdefinitions/count", function (err, result) {
+    db.view("swarms/count", function (err, result) {
 
         var count = 0;;
 
@@ -77,7 +77,10 @@ exports.getAll = function (req, res) {
             return;
         }
 
-        count = result[0].value;
+        if (result.length > 0) {
+            count = result[0].value;
+        }
+
         view_opts.limit = limit;
         view_opts.skip = ofs;
         db.view(view_name, view_opts, function (err, result) {
@@ -90,7 +93,7 @@ exports.getAll = function (req, res) {
 
             // build result
             resultValue = {
-                totalCount: count,
+                totalSwarmCount: count,
                 swarmDefinitions: []
             };
             result.forEach(function (r) {

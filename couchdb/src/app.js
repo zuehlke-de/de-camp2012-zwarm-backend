@@ -143,5 +143,24 @@ var createDesignDocuments = function () {
         }
         console.log("Created design document for swarm definitions.");
     });
+
+    db.save('_design/swarms', {
+        count: {
+            map: function (doc) {
+                if (doc.doctype === 'swarm') {
+                    emit(doc._id, 1);
+                }
+            },
+            reduce: function (k, v) {
+                return sum(v);
+            }
+        }
+    }, function (err) {
+        if (err) {
+            console.log("Could not create design document for swarms: %s", JSON.stringify(err));
+            return;
+        }
+        console.log("Created design document for swarms.");
+    });
 };
 
