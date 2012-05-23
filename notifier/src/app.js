@@ -34,15 +34,17 @@ io.sockets.on('connection', function (socket) {
 
 // test function for apn test
 //noinspection JSUnusedGlobalSymbols
-var testDummy= function() {
+var testApn= function() {
     var data= {
-        deviceToken:"oo7",
-        notificationText:"Hello World",
-        badgeNumber:"1",
-        sound:"default",
-        payload:{}
+        // token iPhone Masa
+        deviceToken: "9769c5e7bac72c4a0d5fe6f6f14956484a1c075643a406f2d9bccfdd4605fd7f",
+        notificationText: "Hello World",
+        badgeNumber: "1",
+        sound: "ping.aiff",
+        payload: {}
     };
     notifyApns.notifyApplePushNotificationService(data);
+    console.log("Sent notification.");
 };
 
-// testDummy();
+// testApn();
