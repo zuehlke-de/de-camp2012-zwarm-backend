@@ -1,9 +1,9 @@
 var default_limit = 10,
     min_participants = 2,
     min_radius = 1, max_radius = 500,
-    min_waiting_time = 1000, max_waiting_time = 24 * 3600 * 1000,
+    min_waiting_time = 1, max_waiting_time = 86400,
     min_valid_from = 0,
-    min_duration = 1000, max_duration = 24 * 3600 * 1000,
+    min_duration = 1, max_duration = 86400,
     min_validity_time = 3600 * 1000,
     nimble = require('nimble');
 

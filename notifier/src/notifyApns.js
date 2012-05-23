@@ -13,8 +13,8 @@ var connection;
  */
 exports.connectToApns = function() {
     var options= {
-        certData:certificate,
-        keyData:key,
+        certData: certificate,
+        keyData: key,
         errorCallback: apnErrorCallback
     };
     connection= new apns.connection(options);
@@ -22,11 +22,11 @@ exports.connectToApns = function() {
 
 // a function to be used as a callback in the event that the push notification service has any errors
 var apnErrorCallback = function(errorCode, note) {
-    console.log("Push notification error, error code: " + errorCode + " Note: " + util.inspect(note));
+    console.log("APNS call failed, error code: " + errorCode + ", Note: " + util.inspect(note));
 };
 
 
-/*
+/**
  * send notification to apple apns
  * request needs to contain:
  *  - deviceToken
@@ -36,10 +36,7 @@ var apnErrorCallback = function(errorCode, note) {
  *  - sound
  */
 exports.notifyApplePushNotificationService = function(data) {
-
-    // create the notification and send it
-    var note = createNotification(data);
-    connection.sendNotification(note);
+    connection.sendNotification(createNotification(data));
 };
 
 // a function used to create a Notification object from a hash of parameters

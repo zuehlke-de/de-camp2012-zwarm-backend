@@ -1,3 +1,5 @@
+var n = require('nimble');
+
 // radius for nearby users in meters
 var default_radius = 500,
     minimum_radius = 1;
@@ -6,7 +8,56 @@ var default_radius = 500,
  * Create new user
  */
 exports.create = function (req, res) {
-    res.send(201);
+
+    var user = req.body,
+        requiredFields = ['id', 'nickname', 'platform'],
+        isValid = true;
+
+    // check if JSON
+    if (!req.is('json')) {
+        res.send('Requests must be in JSON format!', 400);
+        return;
+    }
+
+    // check required fields
+    n.each(requiredFields, function (f) {
+        isValid = isValid && user[f] !== undefined;
+    });
+    if (!isValid) {
+        res.send("One of the required fields is not set: " + requiredFields.join(", "), 400);
+        return;
+    }
+
+    // check for semantic correctness
+    if (user.id == "") {
+        res.send("id must not be empty!", 400);
+        return;
+    }
+    if (user.nickname == "") {
+        res.send("nickname must not be empty!", 400);
+        return;
+    }
+    if (!(user.platform === "ios" || user.platform === "android")) {
+        res.send("platform must be one of ios or android!", 400);
+        return;
+    }
+
+    // store user in database
+    user.doctype = 'user';
+    db.save(user.id, user, function (err) {
+
+        if (err) {
+            console.log("Create user: could not store user: %s\n-> %s", JSON.stringify(err), JSON.stringify(user));
+            res.send("Could not store user!", 500);
+            return;
+        }
+
+        // signal creation
+        delete user._rev;
+        delete user.doctype;
+        res.json(user, 201);
+        console.log("Create user: User created: %s (%s)", user.id, user.nickname);
+    });
 };
 
 /**
@@ -14,19 +65,55 @@ exports.create = function (req, res) {
  */
 exports.updateLocation = function (req, res) {
 
+    var loc = req.body,
+        user = { id: req.params.id };
+
     // check if request body is JSON
     if (!req.is('application/json')) {
         res.send(400);
         return;
     }
 
+    // check if location is correct
+    if (loc.timestamp === undefined || isNaN(loc.timestamp) || loc.timestamp < 0) {
+        res.send("No or invalid timestamp valid", 400);
+        return;
+    }
+    if(loc.latitude === undefined || isNaN(loc.latitude) || !(-90 <= loc.latitude && loc.latitude <= 90)) {
+        res.send("No or invalid latitude value", 400);
+        return;
+    }
+    if(loc.longitude === undefined || isNaN(loc.longitude) || !(-180 <= loc.longitude&& loc.longitude <= 180)) {
+        res.send("No or invalid longitude value", 400);
+        return;
+    }
+
     // send location update to algo node
-    GLOBAL.algo_socket.emit('location', {
-        id: req.params.id,
-        location: req.body
+    user.location = loc;
+    GLOBAL.algo_socket.emit('location', user);
+
+    // save location
+    loc.doctype = 'location';
+    loc.user_id = user.id;
+    db.save(loc, function (err, result) {
+        if (err) {
+            console.log("Update location: Could not save new location for user %s: %s", user.id, JSON.stringify(err));
+        } else {
+            console.log("Update location: Saved new location for user %s: %s", user.id, result.id);
+        }
     });
 
-    res.send(200);
+    // update user
+    db.merge(user.id, user, function (err) {
+        if (err) {
+            console.log("Update location: could not update user %s: %s", user.id, JSON.stringify(err));
+        } else {
+            console.log("Update location: user %s updated", user.id);
+        }
+    });
+
+    // send 200 anyway
+    res.send("Location saved", 200);
 };
 
 /**
