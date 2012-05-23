@@ -50,9 +50,18 @@ var createNotification = function(params) {
         collapse_key: 'ZuehlkeZwarm'
     };
     if (params.payload) {
+        /* todo make this work somehow...
         params.payload.foreach( function( k, v ) {
             message["data."+k]= v;
         });
+        */
+        /*
+        for (k in params.payload) {
+            if (params.hasOwnProperty(k)) {
+                message["data."+k]= params[k];
+            }
+        }
+        */
     }
     return message;
 };
