@@ -129,10 +129,40 @@ exports.getNearbyUsers = function (req, res) {
     var radius = parseFloat(req.query['radius']);
 
     // check radius parameter
-    if (isNaN(radius) || radius < minimum_radius) {
-        radius = default_radius;
-    }
-    console.log("Querying nearby users for user %s in the radius of %d m", req.params.id, radius);
+//    if (isNaN(radius) || radius < minimum_radius) {
+//        radius = default_radius;
+//    }
+//    console.log("Querying nearby users for user %s in the radius of %d m", req.params.id, radius);
+//
+//    res.send(200);
 
-    res.send(200);
+    var user_id = req.params.id;
+
+
+    var dummyReturnValue = (function(count) {
+        var dummyUsers = [];
+
+        function myRandom() {
+            var sign = (Math.random() > 0.5) ? 1.0 : -1.0;
+            return sign * Math.random();
+        }
+
+        for( i = 0; i < count; i++) {
+            var latitude = 50.303 + myRandom() * 0.005;
+            var longitude = 9.747 + myRandom() * 0.005;
+            var nickname = 'Zwarmer ' + i;
+
+            dummyUsers.push({
+                location : {
+                    latitude : latitude,
+                    longitude : longitude
+                },
+                nickname : nickname
+            });
+        }
+
+        return dummyUsers;
+    })(20);
+
+    res.json(dummyReturnValue, 200);
 };
