@@ -135,7 +135,7 @@ exports.update = function (req, res) {
  */
 exports.getAllSwarms = function (req, res) {
     var swarmdefinition_id = req.params.id;
-    var dummyRuturnValue = { id: swarmdefinition_id,
+    var dummyReturnValue = { id: swarmdefinition_id,
         swarms : [
             {
                 id: '1',
@@ -164,5 +164,5 @@ exports.getAllSwarms = function (req, res) {
         ]
     };
 
-    res.json(dummyRuturnValue, 200);
+    res.json(dummyReturnValue, 200);
 };
