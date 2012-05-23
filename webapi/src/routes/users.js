@@ -1,4 +1,7 @@
-var n = require('nimble');
+var n = require('nimble'),
+    locationUpdateCount = 0,
+    dummySwarmThreshold = 42,
+    activateDummySwarms = true;
 
 // radius for nearby users in meters
 var default_radius = 500,
@@ -103,7 +106,7 @@ exports.updateLocation = function (req, res) {
                 },
                 "invitationTime" : new Date().valueOf(),
                 "city" : "Bad Brückenau", // {String}
-                "participants": [user]
+                "participants": []
             };
 
     // check if request body is JSON
@@ -154,16 +157,28 @@ exports.updateLocation = function (req, res) {
     });
 
     // create dummy swarm
-    db.save(dummySwarm, function (err, result) {
-        if (err) {
-            console.log("Update location: Could not save new dummy swarm for user %s: %s", user.id, JSON.stringify(err));
-        } else {
-            console.log("Update location: Created new dummy swarm for user %s: %s", user.id, result.id);
-        }
-    });
+    if (activateDummySwarms && (locationUpdateCount % dummySwarmThreshold === 0)) {
+        console.log("Creating dummy swarm");
+        db.view('swarms/dummy', { descending: true, limit: 5}, function (err, rows) {
+            if (!err) {
+                rows.forEach(function (u) {
+                    dummySwarm.participants.push({ id:u.id });
+                });
+
+                db.save(dummySwarm, function (err, result) {
+                    if (err) {
+                        console.log("Update location: Could not save new dummy swarm for user %s: %s", user.id, JSON.stringify(err));
+                    } else {
+                        console.log("Update location: Created new dummy swarm for user %s: %s", user.id, result.id);
+                    }
+                });
+            }
+        });
+    }
 
     // send 200 anyway
     res.send("Location saved", 200);
+    locationUpdateCount += 1;
 };
 
 /**
