@@ -29,7 +29,7 @@ exports.swarmdefinitions = function (test)
         console.log(JSON.stringify(res.body));
         var swarmdefinition = JSON.parse(res.body);
         test.equals(swarmdefinition.id, '0003')
-        test.equals(swarmdefinition.swarms.length, 4);
+        test.equals(swarmdefinition.swarms.length, 0);
         test.done();
     });
 };
