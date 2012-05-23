@@ -134,5 +134,35 @@ exports.update = function (req, res) {
  * @param res
  */
 exports.getAllSwarms = function (req, res) {
-    res.send(200);
+    var swarmdefinition_id = req.params.id;
+    var dummyRuturnValue = { id: swarmdefinition_id,
+        swarms : [
+            {
+                id: '1',
+                city: 'Hamburg',
+                invitationTime: new Date(2012, 5, 21, 12, 3, 0).getMilliseconds(),
+                commentCount: 3
+            },
+            {
+                id: '2',
+                city: 'Muenchen',
+                invitationTime: new Date(2012, 5, 21, 12, 5, 0).getMilliseconds(),
+                commentCount: 6
+            },
+            {
+                id: '3',
+                city: 'Frankfurt',
+                invitationTime: new Date(2012, 5, 21, 15, 8, 0).getMilliseconds(),
+                commentCount: 8
+            },
+            {
+                id: '4',
+                city: 'Hannover',
+                invitationTime: new Date(2012, 5, 21, 15, 3, 0).getMilliseconds(),
+                commentCount: 13
+            }
+        ]
+    };
+
+    res.json(dummyRuturnValue, 200);
 };
