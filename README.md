@@ -86,6 +86,20 @@ MIME-Type: application/vnd.zwarm.swarmdefinition
 
 ## Route Definitions ##
 
+Route /users/:id/location
+
+    content type: application/vnd.zwarm.user
+
+        {
+            id,
+            location:
+                {
+                    "timestamp",
+                    "latitude",
+                    "longitude"
+                }
+        }
+
 Route /swarmdefinitions
 
     query parameters:
@@ -115,6 +129,4 @@ Route /swarmdefinitions/:id/swarms
                 ...
             ]
         }
-
-
 
