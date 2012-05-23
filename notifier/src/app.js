@@ -4,10 +4,10 @@
 
 
 // connect to the Apple and Google services
-var notifyApns= require('./notifyApns.js');
+var notifyApns= require('./notifications/notifyApns.js');
 notifyApns.connectToApns();
 
-var notifyC2dm= require('./notifyC2dm.js');
+var notifyC2dm= require('./notifications/notifyC2dm.js');
 notifyC2dm.connectToC2dm();
 
 // create the listener socket
