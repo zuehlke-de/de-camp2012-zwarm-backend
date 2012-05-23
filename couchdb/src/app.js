@@ -38,7 +38,6 @@ var createDesignDocuments = function () {
             map: function(doc) {
                 if (doc.doctype === 'user') {
                     emit([doc.location.latitude.toPrecision(2), doc.location.longitude.toPrecision(2)], doc);
-                    //emit (doc.nickname, doc);
                 }
             }
         }
@@ -168,12 +167,15 @@ var createDesignDocuments = function () {
         all: {
             map: function (doc) {
                 if (doc.doctype === 'swarm') {
-                    emit([doc.swarmDefinitionId, doc.invitationTime, doc._id, 1], { type: 's', id: doc._id, invitationTime: doc.invitationTime });
+                    doc.type = 's';
+                    emit([doc._id, doc.invitationTime, 1], doc);
                 } else if (doc.doctype === 'comments') {
-                    emit([0, 0, doc.swarmId, 0], { type: 'c' })
+                    doc.type = 'c';
+                    emit([doc.swarmId, 0, 0, 0], doc)
                 }
             },
             reduce: function(keys, values, rereduce) {
+
                 var result = undefined;
 
                 if (rereduce) {
@@ -185,8 +187,10 @@ var createDesignDocuments = function () {
                         }
                     });
                 } else {
-                    result = { commentCount : 0 };
                     values.forEach(function (v) {
+                        result = v;
+                        result.commentCount = 0;
+
                         if (v.type === 's') {
                             result.id = v.id;
                             result.invitationTime = v.invitationTime;

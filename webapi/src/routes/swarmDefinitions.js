@@ -224,10 +224,8 @@ exports.getAllSwarms = function (req, res) {
 
     var swarmdefinition_id = req.params.id,
         view_opts = {
-            endkey: [swarmdefinition_id],
-            startkey: [swarmdefinition_id, {}],
             descending: true,
-            group_level: 3
+            group_level: 1
         };
 
     db.view('swarms/all', view_opts, function (err, result) {
@@ -245,7 +243,8 @@ exports.getAllSwarms = function (req, res) {
                 return {
                     id:s.value.id,
                     invitationTime:s.value.invitationTime,
-                    commentCount:s.value.commentCount
+                    commentCount:s.value.commentCount,
+                    city:s.value.city
                 };
             })
         };

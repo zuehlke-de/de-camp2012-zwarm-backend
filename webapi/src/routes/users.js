@@ -217,7 +217,7 @@ var dummyNearbyUsers = function (req, res) {
 
 var getNearbyUsers = function() {
     var view_name, view_opts;
-    view_name = "swarmdefinitions/past";
+    view_name = "users/nearby";
     view_opts = {
         group_level: 2,
         descending: true,
@@ -225,6 +225,32 @@ var getNearbyUsers = function() {
         startkey: [0,{}]
     };
 
+    db.view(view_name, view_opts, function (err, result) {
+
+        if (err) {
+            console.log("Get all swarm definitions. ERROR(couchdb): %s", JSON.stringify(err));
+            res.send("Error while searching swarm definitions", 500);
+            return;
+        }
+
+        // build result
+        resultValue = {
+            totalSwarmCount: count,
+            swarmDefinitions: []
+        };
+        result.forEach(function (r) {
+            resultValue.swarmDefinitions.push({
+                id: r.id,
+                title: r.title,
+                swarmCount: r.count === undefined ? 0 : r.count
+            });
+        });
+
+        // send ok
+        res.json(resultValue);
+        res.send(200);
+        console.log("Found %d swarm definition[s]", resultValue.swarmDefinitions.length);
+    });
 };
 
 
