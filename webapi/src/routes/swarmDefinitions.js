@@ -188,7 +188,7 @@ exports.create = function (req, res) {
     // add as new document to database
     def.doctype = 'swarmdefinition';
     def.created = (new Date()).getTime();
-    db.save(def, function (err, result) {
+    db.save(def.id, def, function (err, result) {
 
         if (err) {
             console.log(
