@@ -33,6 +33,16 @@ db.exists(function (err, exists) {
 
 // create views for querying swarm definitions
 var createDesignDocuments = function () {
+    db.save('_design/users', {
+        nearby: {
+            map: function(doc) {
+                if (doc.doctype === 'user') {
+                    emit([doc.location.latitude.toPrecision(2), doc.location.longitude.toPrecision(2)], doc);
+                    //emit (doc.nickname, doc);
+                }
+            }
+        }
+    });
     db.save('_design/swarmdefinitions', {
         count: {
             map: function (doc) {

@@ -13,14 +13,20 @@ var client = restify.createJsonClient({
     url: 'http://localhost:4711'
 });
 
-exports.create = function (userObject, check) {
-    client.post('/swarmdefinitions', userObject, function(err, req, res, obj) {
-        check(res.statusId, err);
+exports.create = function (swarmdefinitionObject, check) {
+    client.post('/swarmdefinitions', swarmdefinitionObject, function(err, req, res, obj) {
+        check(res);
     });
 };
 
 exports.getAll = function (check) {
     client.get('/swarmdefinitions', function(err, req, res, obj) {
-        check(res.statusId, err);
+        check(res);
+    });
+}
+
+exports.getAllSwarms = function (swarmDefinitionId, check) {
+    client.get('/swarmdefinitions/' + swarmDefinitionId + '/swarms', function(err, req, res, obj) {
+        check(res);
     });
 }
