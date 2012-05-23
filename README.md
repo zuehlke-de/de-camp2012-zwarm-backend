@@ -107,12 +107,18 @@ Route /swarmdefinitions
         type: [upcoming|past|owned|participated]
         user: <uuid>
 
-    return type: application/vnd.zwarm.swarmdefinition
+    return type: Array of application/vnd.zwarm.swarmdefinition
 
         {
-            "id",
-            "title",
-            "swarmCount"
+            totalCount: <total number of swarms>,
+            swarmDefinitions: [
+                {
+                    "id",
+                    "title",
+                    "swarmCount"
+                },
+                ...
+            ]
         }
 
 Route /swarmdefinitions/:id/swarms

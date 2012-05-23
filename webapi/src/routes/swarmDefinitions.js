@@ -18,9 +18,11 @@ exports.getAll = function (req, res) {
 
     var valid_types = ['past', 'upcoming', 'owned', 'participated'],
         default_type = 'upcoming',
+        now = (new Date()).getTime(),
         ofs = parseInt(req.query['offset']),
         limit = parseInt(req.query['limit']),
         type = req.query['type'] || default_type,
+        user = req.query['user'],
         view_name, view_opts;
 
     // check validity of paging parameters
@@ -31,12 +33,33 @@ exports.getAll = function (req, res) {
     switch (type) {
         case "past":
             view_name = "swarmdefinitions/past";
+            view_opts = {
+                group_level: 2,
+                descending: true,
+                endkey: [now],
+                startkey: [0,{}]
+            };
             break;
         case "upcoming":
             view_name = "swarmdefinitions/upcoming";
+            view_opts = {
+                descending: true
+            };
             break;
         case "owned":
+
+            // check if user is set
+            if (user === undefined) {
+                res.send("Missing parameter user for type: owned!", 400);
+                return;
+            }
             view_name = "swarmdefinitions/owned";
+            view_opts = {
+                group_level: 3,
+                descending: true,
+                endkey: [user],
+                startkey: [user, {}]
+            };
             break;
         default:
             res.send("Invalid type parameter "+type+". Must be one of: " + valid_types.join(", "), 400);
@@ -44,7 +67,9 @@ exports.getAll = function (req, res) {
     }
 
     console.log("Querying swarm definitions (offset = %d, limit = %d)", ofs, limit);
-    db.view(view_name, view_opts, function (err, result) {
+    db.view("swarmdefinitions/count", function (err, result) {
+
+        var count = 0;;
 
         if (err) {
             console.log("Get all swarm definitions. ERROR(couchdb): %s", JSON.stringify(err));
@@ -52,8 +77,35 @@ exports.getAll = function (req, res) {
             return;
         }
 
-        // send ok
-        res.send(200);
+        count = result[0].value;
+        view_opts.limit = limit;
+        view_opts.skip = ofs;
+        db.view(view_name, view_opts, function (err, result) {
+
+            if (err) {
+                console.log("Get all swarm definitions. ERROR(couchdb): %s", JSON.stringify(err));
+                res.send("Error while searching swarm definitions", 500);
+                return;
+            }
+
+            // build result
+            resultValue = {
+                totalCount: count,
+                swarmDefinitions: []
+            };
+            result.forEach(function (r) {
+                resultValue.swarmDefinitions.push({
+                    id: r.id,
+                    title: r.title,
+                    swarmCount: r.count === undefined ? 0 : r.count
+                });
+            });
+
+            // send ok
+            res.json(resultValue);
+            res.send(200);
+            console.log("Found %d swarm definition[s]", resultValue.swarmDefinitions.length);
+        });
     });
 };
 
