@@ -55,6 +55,7 @@ MIME-Type: application/vnd.zwarm.swarm
 
     {
         "id": "<uuid>", // {String}
+        "swarmDefinitionId": "<id of swarm definition>", // {String}
         "invitationCount": "<The number of invited users>", // {Number}
         "commentCount": "<The number of comments>", // {Number}
         "center" : { ... } "<The center location of the swarm>", // {Location}
