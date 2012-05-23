@@ -14,12 +14,12 @@ var client = restify.createJsonClient({
 
 exports.create = function (userObject, check) {
     client.post('/users', userObject, function(err, req, res, obj) {
-        check(res.statusCode, err);
+        check(res);
     });
 };
 
 exports.updateLocation = function (userId, location, check) {
     client.put('/users/' + userId + '/location', {id: userId, location: location}, function(err, req, res, obj) {
-        check(res.statusCode, err);
+        check(res);
     });
 }
