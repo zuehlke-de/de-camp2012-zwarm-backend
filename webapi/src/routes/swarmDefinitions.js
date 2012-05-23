@@ -140,25 +140,25 @@ exports.getAllSwarms = function (req, res) {
             {
                 id: '1',
                 city: 'Hamburg',
-                invitationTime: new Date(2012, 5, 21, 12, 3, 0).getMilliseconds(),
+                invitationTime: new Date(2012, 5, 21, 12, 3, 0).valueOf(),
                 commentCount: 3
             },
             {
                 id: '2',
                 city: 'Muenchen',
-                invitationTime: new Date(2012, 5, 21, 12, 5, 0).getMilliseconds(),
+                invitationTime: new Date(2012, 5, 21, 12, 5, 0).valueOf(),
                 commentCount: 6
             },
             {
                 id: '3',
                 city: 'Frankfurt',
-                invitationTime: new Date(2012, 5, 21, 15, 8, 0).getMilliseconds(),
+                invitationTime: new Date(2012, 5, 21, 15, 8, 0).valueOf(),
                 commentCount: 8
             },
             {
                 id: '4',
                 city: 'Hannover',
-                invitationTime: new Date(2012, 5, 21, 15, 3, 0).getMilliseconds(),
+                invitationTime: new Date(2012, 5, 21, 15, 3, 0).valueOf(),
                 commentCount: 13
             }
         ]
