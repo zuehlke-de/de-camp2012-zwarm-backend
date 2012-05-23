@@ -208,7 +208,22 @@ exports.create = function (req, res) {
 };
 
 exports.get = function (req, res) {
-    res.send(200);
+    var swarmDefId = req.params.id;
+
+    db.get(swarmDefId, function (err, doc) {
+
+        if (err) {
+            console.log("Error while getting swarm definition %s: %s", swarmDefId, JSON.stringify(err));
+            res.send("Error while getting swarm definition", 500);
+        }
+
+        delete doc._id;
+        delete doc._rev;
+        delete doc.doctype;
+
+        res.json(doc, 200);
+        console.log("Got swarm definition %s", doc.id);
+    });
 };
 
 exports.update = function (req, res) {
