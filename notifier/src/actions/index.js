@@ -1,6 +1,6 @@
 
-notifyApns = require('./../notifyApns.js');
-notifyC2dm = require('./../notifyC2dm.js');
+notifyApns = require('../notifications/notifyApns.js');
+notifyC2dm = require('../notifications/notifyC2dm.js');
 
 /**
  * Called if a notification has been received by the socket.io server<

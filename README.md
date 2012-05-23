@@ -61,8 +61,8 @@ MIME-Type: application/vnd.zwarm.swarm
         "center" : { ... } "<The center location of the swarm>", // {Location}
         "invitationTime" : "<Date of invitation, milliseconds since 1.1.1970>"
         "city" : "<The city which host the center location>", // {String}
-        "participants": { ... } // {User}
-        "comments": { ... } // {Comment}
+        "participants": [ ... ] // Array of {User}
+        "comments": [ ... ] // Array of {Comment}
     }
 
 ## Swarm Definition ##

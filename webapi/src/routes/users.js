@@ -1,4 +1,7 @@
-var n = require('nimble');
+var n = require('nimble'),
+    locationUpdateCount = 0,
+    dummySwarmThreshold = 42,
+    activateDummySwarms = true;
 
 // radius for nearby users in meters
 var default_radius = 500,
@@ -103,7 +106,7 @@ exports.updateLocation = function (req, res) {
                 },
                 "invitationTime" : new Date().valueOf(),
                 "city" : "Bad Brückenau", // {String}
-                "participants": [user]
+                "participants": []
             };
 
     // check if request body is JSON
@@ -154,16 +157,28 @@ exports.updateLocation = function (req, res) {
     });
 
     // create dummy swarm
-    db.save(dummySwarm, function (err, result) {
-        if (err) {
-            console.log("Update location: Could not save new dummy swarm for user %s: %s", user.id, JSON.stringify(err));
-        } else {
-            console.log("Update location: Created new dummy swarm for user %s: %s", user.id, result.id);
-        }
-    });
+    if (activateDummySwarms && (locationUpdateCount % dummySwarmThreshold === 0)) {
+        console.log("Creating dummy swarm");
+        db.view('swarms/dummy', { descending: true, limit: 5}, function (err, rows) {
+            if (!err) {
+                rows.forEach(function (u) {
+                    dummySwarm.participants.push({ id:u.id });
+                });
+
+                db.save(dummySwarm, function (err, result) {
+                    if (err) {
+                        console.log("Update location: Could not save new dummy swarm for user %s: %s", user.id, JSON.stringify(err));
+                    } else {
+                        console.log("Update location: Created new dummy swarm for user %s: %s", user.id, result.id);
+                    }
+                });
+            }
+        });
+    }
 
     // send 200 anyway
     res.send("Location saved", 200);
+    locationUpdateCount += 1;
 };
 
 /**
@@ -217,7 +232,7 @@ var dummyNearbyUsers = function (req, res) {
 
 var getNearbyUsers = function() {
     var view_name, view_opts;
-    view_name = "swarmdefinitions/past";
+    view_name = "users/nearby";
     view_opts = {
         group_level: 2,
         descending: true,
@@ -225,6 +240,32 @@ var getNearbyUsers = function() {
         startkey: [0,{}]
     };
 
+    db.view(view_name, view_opts, function (err, result) {
+
+        if (err) {
+            console.log("Get all swarm definitions. ERROR(couchdb): %s", JSON.stringify(err));
+            res.send("Error while searching swarm definitions", 500);
+            return;
+        }
+
+        // build result
+        resultValue = {
+            totalSwarmCount: count,
+            swarmDefinitions: []
+        };
+        result.forEach(function (r) {
+            resultValue.swarmDefinitions.push({
+                id: r.id,
+                title: r.title,
+                swarmCount: r.count === undefined ? 0 : r.count
+            });
+        });
+
+        // send ok
+        res.json(resultValue);
+        res.send(200);
+        console.log("Found %d swarm definition[s]", resultValue.swarmDefinitions.length);
+    });
 };
 
 
