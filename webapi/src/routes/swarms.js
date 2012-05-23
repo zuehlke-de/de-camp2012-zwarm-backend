@@ -5,6 +5,7 @@
  * Time: 09:39
  * To change this template use File | Settings | File Templates.
  */
+var n = require('nimble');
 
 /**
  * Get a single swarm instance
@@ -31,7 +32,53 @@ exports.get = function (req, res) {
  * @param res
  */
 exports.participate = function (req, res) {
-    res.send(201);
+    var user = req.body,
+        swarmId = req.params.id,
+        requiredFields = ['id'],
+        isValid = true;
+
+    // check if JSON
+    if (!req.is('json')) {
+        res.send('Requests must be in JSON format!', 400);
+        return;
+    }
+
+    // check required fields
+    n.each(requiredFields, function (f) {
+        isValid = isValid && user[f] !== undefined;
+    });
+    if (!isValid) {
+        res.send("One of the required fields is not set: " + requiredFields.join(", "), 400);
+        return;
+    }
+
+    // check for semantic correctness
+    if (user.id == "") {
+        res.send("id must not be empty!", 400);
+        return;
+    }
+
+    var swarm;
+
+    db.get(swarmId, function (err, doc) {
+        if (err) {
+            console.log("Participate: Could not find swarm %s: %s", swarmId, JSON.stringify(err));
+            res.send("Error while saving participation " + user.id, 500);
+            return;
+        }
+        swarm = doc;
+        swarm.participants.push(user);
+
+        db.save(swarmId, swarm, function (err, result) {
+            if (err) {
+                console.log("Participate: Failed to participate user %s at swarm %s: %s", user.id, swarm.id, JSON.stringify(err));
+                res.send("Error while saving participation " + user.id, 500);
+            } else {
+                console.log("Participate: User %s participates swarm %s: %s", user.id, swarm.id, result.id);
+                res.send(201);
+            }
+        });
+    });
 };
 
 /**
@@ -40,7 +87,59 @@ exports.participate = function (req, res) {
  * @param res
  */
 exports.createComment = function (req, res) {
-    res.send(201);
+    var comment = req.body,
+        swarmId = req.params.id,
+        requiredFields = ['text','nickname'],
+        isValid = true;
+
+    // check if JSON
+    if (!req.is('json')) {
+        res.send('Requests must be in JSON format!', 400);
+        return;
+    }
+
+    // check required fields
+    n.each(requiredFields, function (f) {
+        isValid = isValid && user[f] !== undefined;
+    });
+    if (!isValid) {
+        res.send("One of the required fields is not set: " + requiredFields.join(", "), 400);
+        return;
+    }
+
+    // check for semantic correctness
+    if (comment.text == "") {
+        res.send("text must not be empty!", 400);
+        return;
+    }
+
+    // check for semantic correctness
+    if (comment.nickname == "") {
+        res.send("nickname must not be empty!", 400);
+        return;
+    }
+
+    var swarm;
+
+    db.get(swarmId, function (err, doc) {
+        if (err) {
+            console.log("Create comment: Could not find swarm %s: %s", swarmId, JSON.stringify(err));
+            res.send("Error while saving participation " + user.id, 500);
+        }
+        swarm = doc;
+        comment.timestamp = new Date().valueOf();
+        swarm.comments.push(user);
+
+        db.save(swarmId, swarm, function (err, result) {
+            if (err) {
+                console.log("Create comment: Failed to create comment %s for swarm %s: %s", comment.test, swarmId, JSON.stringify(err));
+                res.send("Error while saving comment " + user.id, 500);
+            } else {
+                console.log("Participate: Comment %s added to swarm %s: %s", comment, swarmId, result.id);
+                res.send(201);
+            }
+        });
+    });
 };
 
 /**
